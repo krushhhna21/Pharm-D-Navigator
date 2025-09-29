@@ -1,0 +1,4 @@
+# Deny script execution in uploads
+<FilesMatch "\.(php|phar|phtml|cgi|pl|sh)$">
+  Deny from all
+</FilesMatch>
