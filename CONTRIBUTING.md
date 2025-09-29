@@ -19,7 +19,7 @@ Thank you for your interest in contributing to the SCOP Resource Hub! This docum
 
 1. **Fork the repository**
    ```bash
-   git fork https://github.com/yourusername/scop-resource-hub.git
+   git fork https://github.com/krushhhna21/Pharm-D-Navigator.git
    ```
 
 2. **Create a feature branch**

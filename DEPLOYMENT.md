@@ -18,7 +18,7 @@
 ### 2. Push Your Code
 ```bash
 # Add GitHub remote (replace with your repository URL)
-git remote add origin https://github.com/yourusername/scop-resource-hub.git
+git remote add origin https://github.com/krushhhna21/Pharm-D-Navigator.git
 
 # Push to GitHub
 git branch -M main

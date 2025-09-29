@@ -33,8 +33,8 @@ A comprehensive digital resource management system for Pharm D students at Shivl
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/scop-resource-hub.git
-   cd scop-resource-hub
+   git clone https://github.com/krushhhna21/Pharm-D-Navigator.git
+   cd Pharm-D-Navigator
    ```
 
 2. **Set up database**
