@@ -52,6 +52,10 @@ try {
       if (!$year_id) json_err('year_id is required');
       json_ok($student->listResourcesByYear($year_id, $resource_type));
       break;
+    case 'list_resources_by_type':
+      $resource_type = $_GET['resource_type'] ?? 'resource';
+      json_ok($student->listResourcesByType($resource_type));
+      break;
     case 'increment_view':
       $resource_id = intval($_POST['resource_id'] ?? 0);
       if (!$resource_id) json_err('resource_id is required');
@@ -87,16 +91,29 @@ try {
       $description = trim($_POST['description'] ?? '');
       $external_url = trim($_POST['external_url'] ?? '');
       $resource_type = trim($_POST['resource_type'] ?? 'resource');
+      $card_color = trim($_POST['card_color'] ?? '#0ea5e9');
       
-      // For questions (PYQ), subject_id is optional but year_id is required
+      // Validation based on resource type
+      $general_types = ['journal', 'publication', 'career'];
+      
       if ($resource_type === 'question') {
+        // For questions (PYQ), subject_id is optional but year_id is required
         if (!$title || !$year_id) json_err('title and year_id are required for questions');
         $subject_id = $subject_id > 0 ? $subject_id : null;
+      } elseif ($resource_type === 'important-question') {
+        // For important questions, both subject_id and year_id are required (like books)
+        if (!$subject_id || !$title || !$year_id) json_err('subject_id, year_id and title are required for important questions');
+      } elseif (in_array($resource_type, $general_types)) {
+        // For general resources, only title is required
+        if (!$title) json_err('title is required');
+        $subject_id = $subject_id > 0 ? $subject_id : null;
+        $year_id = $year_id > 0 ? $year_id : null;
       } else {
+        // For specific resources (books, etc.), subject_id and title are required
         if (!$subject_id || !$title) json_err('subject_id and title are required');
       }
       
-      json_ok($admin->createResource($subject_id, $title, $description, $external_url, $resource_type, $year_id));
+      json_ok($admin->createResource($subject_id, $title, $description, $external_url, $resource_type, $year_id, $card_color));
       break;
     case 'admin_delete_resource':
       $payload = json_decode(file_get_contents('php://input'), true) ?: $_POST;

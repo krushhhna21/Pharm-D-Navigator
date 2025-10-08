@@ -40,6 +40,10 @@
           <span class="material-icons">work</span>
           Career
         </a>
+        <a href="#important-questions" class="nav-item">
+          <span class="material-icons">priority_high</span>
+          Important Questions
+        </a>
         <a href="#questions" class="nav-item">
           <span class="material-icons">quiz</span>
           Previous Questions
@@ -149,41 +153,110 @@
           </div>
         </section>
 
-        <!-- Journals Section (Managed via Pages) -->
+        <!-- Journals Section -->
         <section class="content-section" id="journals">
           <div class="section-header">
-            <h2>Journals</h2>
+            <h2>Journals Management</h2>
+            <button class="btn primary" id="addJournalBtn">
+              <span class="material-icons">add</span> Add Journal
+            </button>
           </div>
-          <div class="card" style="text-align:left;">
-            <p class="muted">This section is managed as a simple page. Use the Pages editor to set the content shown on the public Journals tab.</p>
-            <div class="form-actions">
-              <a class="btn primary" href="#pages"><span class="material-icons">edit_note</span> Edit Journals Page</a>
+          <div class="card">
+            <div class="table-container">
+              <table id="journalsTable" class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Year</th>
+                    <th>Subject</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </div>
         </section>
 
-        <!-- Publications Section (Managed via Pages) -->
+        <!-- Publications Section -->
         <section class="content-section" id="publications">
           <div class="section-header">
-            <h2>Publications</h2>
+            <h2>Publications Management</h2>
+            <button class="btn primary" id="addPublicationBtn">
+              <span class="material-icons">add</span> Add Publication
+            </button>
           </div>
-          <div class="card" style="text-align:left;">
-            <p class="muted">This section is managed as a simple page. Use the Pages editor to set the content shown on the public Publications tab.</p>
-            <div class="form-actions">
-              <a class="btn primary" href="#pages"><span class="material-icons">edit_note</span> Edit Publications Page</a>
+          <div class="card">
+            <div class="table-container">
+              <table id="publicationsTable" class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Year</th>
+                    <th>Subject</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </div>
         </section>
 
-        <!-- Career Section (Managed via Pages) -->
+        <!-- Career Section -->
         <section class="content-section" id="careers">
           <div class="section-header">
-            <h2>Career Opportunities</h2>
+            <h2>Career Resources Management</h2>
+            <button class="btn primary" id="addCareerBtn">
+              <span class="material-icons">add</span> Add Career Resource
+            </button>
           </div>
-          <div class="card" style="text-align:left;">
-            <p class="muted">This section is managed as a simple page. Use the Pages editor to set the content shown on the public Career tab.</p>
-            <div class="form-actions">
-              <a class="btn primary" href="#pages"><span class="material-icons">edit_note</span> Edit Career Page</a>
+          <div class="card">
+            <div class="table-container">
+              <table id="careersTable" class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Year</th>
+                    <th>Subject</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Important Questions Section -->
+        <section class="content-section" id="important-questions">
+          <div class="section-header">
+            <h2>Important Questions Management</h2>
+            <button class="btn primary" id="addImportantQuestionBtn">
+              <span class="material-icons">add</span> Add Important Question
+            </button>
+          </div>
+          <div class="card">
+            <div class="table-container">
+              <table id="importantQuestionsTable" class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Year</th>
+                    <th>Subject</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -378,13 +451,15 @@
           <label for="resourceTitle">Title</label>
           <input type="text" id="resourceTitle" name="title" required>
         </div>
-        <div class="form-group">
+        <div class="form-group resource-year-field">
           <label for="resourceYear">Year</label>
-          <select id="resourceYear" name="year_id" required></select>
+          <select id="resourceYear" name="year_id"></select>
+          <small class="muted">Optional for journals, publications, and career resources</small>
         </div>
-        <div class="form-group">
+        <div class="form-group resource-subject-field">
           <label for="resourceSubject">Subject</label>
-          <select id="resourceSubject" name="subject_id" required></select>
+          <select id="resourceSubject" name="subject_id"></select>
+          <small class="muted">Optional for journals, publications, career resources, and previous year questions</small>
         </div>
         <div class="form-group">
           <label for="resourceType">Resource Type</label>
@@ -394,6 +469,8 @@
             <option value="book">Book</option>
             <option value="journal">Journal</option>
             <option value="publication">Publication</option>
+            <option value="career">Career Resource</option>
+            <option value="important-question">Important Question</option>
             <option value="question">Previous Year Questions</option>
             <option value="other">Other</option>
           </select>
@@ -401,6 +478,16 @@
         <div class="form-group">
           <label for="resourceDescription">Description</label>
           <textarea id="resourceDescription" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="resourceThumbnail">Thumbnail Image</label>
+          <input type="file" id="resourceThumbnail" name="thumbnail" accept="image/*">
+          <small class="muted">Optional: Upload an image to display on the resource card</small>
+        </div>
+        <div class="form-group">
+          <label for="resourceCardColor">Card Color</label>
+          <input type="color" id="resourceCardColor" name="card_color" value="#0ea5e9">
+          <small class="muted">Choose a color theme for this resource card</small>
         </div>
         <div class="form-group">
           <label for="resourceFile">Upload File</label>

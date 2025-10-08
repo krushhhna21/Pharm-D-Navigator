@@ -47,8 +47,200 @@
   --space-5: 2rem;
   --space-6: 3rem;
 
-  /* Typography */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Resource Cards - Modern Card Layout */
+.resource-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.resource-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 280px;
+}
+
+.resource-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.resource-card-header {
+  position: relative;
+  height: 120px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.resource-card-header.has-thumbnail {
+  padding: 0;
+}
+
+.resource-card-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.resource-card-icon {
+  font-size: 3rem;
+  color: white;
+  opacity: 0.9;
+}
+
+.resource-card-type {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--fg);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resource-card-body {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.resource-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+  color: var(--fg);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.resource-card-description {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0 0 1rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.resource-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.resource-card-download {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.resource-card-download:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  color: white;
+  text-decoration: none;
+}
+
+.resource-card-size {
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* File type specific colors */
+.resource-card-header[data-type="pdf"] {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.resource-card-header[data-type="doc"] {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.resource-card-header[data-type="image"] {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.resource-card-header[data-type="video"] {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.resource-card-header[data-type="external"] {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+/* Academic year badge */
+.year-badge {
+  background: var(--accent-light);
+  color: var(--accent-dark);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Subject badge */
+.subject-badge {
+  background: var(--border);
+  color: var(--muted);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Empty state for no thumbnail */
+.resource-card-header.no-thumbnail {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .resource-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .resource-card {
+    height: auto;
+    min-height: 260px;
+  }
+}
   --font-heading: var(--font-sans);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 

@@ -1,6 +1,6 @@
 <?php
 return [
-  'db_host' => '127.0.0.1',
+  'db_host' => '127.0.0.1:3306',
   'db_name' => 'scop_resource_hub',
   'db_user' => 'root',
   'db_pass' => 'chalwad111',

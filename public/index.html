@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <meta name="description" content="Shivlingeshwar College of Pharmacy (SCOP) Almala — Pharm D Resource Hub">
+  <meta name="api-base" content="http://localhost/scop-resource-hub/backend/api">
 </head>
 <body>
   <div class="menu-tab" role="navigation">
@@ -38,6 +39,10 @@
         <a href="#" class="menu-item" data-library="questions" role="menuitem">
           <span class="material-icons">quiz</span>
           Previous Year Questions
+        </a>
+        <a href="#" class="menu-item" data-library="important-questions" role="menuitem">
+          <span class="material-icons">priority_high</span>
+          Important Questions
         </a>
         <a href="#" class="menu-item" data-library="resources" role="menuitem">
           <span class="material-icons">folder</span>
@@ -156,6 +161,15 @@
             <p class="muted">Choose your Pharm D year to view questions</p>
           </div>
           <div id="questionsYearGrid" class="grid"></div>
+        </div>
+      </main>
+
+      <main class="card library-section" id="important-questions-library" style="display: none;">
+        <div class="section-header">
+          <h2>Important Questions</h2>
+          <p class="muted">Curated important questions for exam preparation</p>
+        </div>
+        <div id="important-questions-content" class="library-content">
         </div>
       </main>
 

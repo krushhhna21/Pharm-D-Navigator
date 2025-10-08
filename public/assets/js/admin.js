@@ -182,16 +182,16 @@ function initializeModals() {
     const addJournalBtn = document.getElementById('addJournalBtn');
     const addPublicationBtn = document.getElementById('addPublicationBtn');
     const addCareerBtn = document.getElementById('addCareerBtn');
+    const addImportantQuestionBtn = document.getElementById('addImportantQuestionBtn');
     const addQuestionBtn = document.getElementById('addQuestionBtn');
     const addResourceBtn = document.getElementById('addResourceBtn');
     
     if (addBookBtn) addBookBtn.addEventListener('click', () => openModal('bookModal'));
-    // Journals managed via Pages editor now; modal removed
-    // if (addJournalBtn) addJournalBtn.addEventListener('click', () => openModal('journalModal'));
-    // Publications managed via Pages editor now; modal removed
-    // if (addPublicationBtn) addPublicationBtn.addEventListener('click', () => openModal('publicationModal'));
-    // Careers managed via Pages editor now; modal removed
-    // if (addCareerBtn) addCareerBtn.addEventListener('click', () => openModal('careerModal'));
+    // Journals, Publications, Career, and Important Questions now use the enhanced resource modal
+    if (addJournalBtn) addJournalBtn.addEventListener('click', () => openResourceModal('journal'));
+    if (addPublicationBtn) addPublicationBtn.addEventListener('click', () => openResourceModal('publication'));
+    if (addCareerBtn) addCareerBtn.addEventListener('click', () => openResourceModal('career'));
+    if (addImportantQuestionBtn) addImportantQuestionBtn.addEventListener('click', () => openResourceModal('important-question'));
     if (addQuestionBtn) addQuestionBtn.addEventListener('click', () => openModal('questionModal'));
     if (addResourceBtn) addResourceBtn.addEventListener('click', () => openModal('resourceModal'));
     
@@ -244,6 +244,74 @@ function closeModal(modalId) {
         if (form) {
             form.reset();
         }
+    }
+}
+
+function openResourceModal(resourceType) {
+    const modal = document.getElementById('resourceModal');
+    if (modal) {
+        // Set the resource type in the form
+        const resourceTypeSelect = modal.querySelector('#resourceType');
+        if (resourceTypeSelect) {
+            resourceTypeSelect.value = resourceType;
+        }
+        
+        // Update modal title based on resource type
+        const titleElement = modal.querySelector('#resourceModalTitle');
+        if (titleElement) {
+            const titles = {
+                'journal': 'Add New Journal',
+                'publication': 'Add New Publication', 
+                'career': 'Add New Career Resource',
+                'important-question': 'Add New Important Question'
+            };
+            titleElement.textContent = titles[resourceType] || 'Add New Resource';
+        }
+        
+        // Handle field visibility based on resource type
+        toggleResourceFields(resourceType);
+        
+        // Open the modal
+        openModal('resourceModal');
+    }
+}
+
+// Toggle Year and Subject fields based on resource type
+function toggleResourceFields(resourceType) {
+    const yearField = document.querySelector('.resource-year-field');
+    const subjectField = document.querySelector('.resource-subject-field');
+    const yearSelect = document.getElementById('resourceYear');
+    const subjectSelect = document.getElementById('resourceSubject');
+    
+    // Resource types that don't require year/subject
+    const generalTypes = ['journal', 'publication', 'career'];
+    // Resource types that require only year (subject optional)
+    const yearOnlyTypes = ['question'];
+    
+    if (generalTypes.includes(resourceType)) {
+        // Hide fields for general resources
+        if (yearField) yearField.classList.add('hidden');
+        if (subjectField) subjectField.classList.add('hidden');
+        
+        // Remove required attribute
+        if (yearSelect) yearSelect.removeAttribute('required');
+        if (subjectSelect) subjectSelect.removeAttribute('required');
+    } else if (yearOnlyTypes.includes(resourceType)) {
+        // Show year field only for questions (PYQ)
+        if (yearField) yearField.classList.remove('hidden');
+        if (subjectField) subjectField.classList.add('hidden');
+        
+        // Year required, subject optional
+        if (yearSelect) yearSelect.setAttribute('required', 'required');
+        if (subjectSelect) subjectSelect.removeAttribute('required');
+    } else {
+        // Show both fields for specific resources (books, important-questions, etc.)
+        if (yearField) yearField.classList.remove('hidden');
+        if (subjectField) subjectField.classList.remove('hidden');
+        
+        // Both required
+        if (yearSelect) yearSelect.setAttribute('required', 'required');
+        if (subjectSelect) subjectSelect.setAttribute('required', 'required');
     }
 }
 
@@ -300,6 +368,7 @@ function initializeForms() {
     if (resourceForm) {
         const yearSelect = resourceForm.querySelector('#resourceYear');
         const subjectSelect = resourceForm.querySelector('#resourceSubject');
+        const resourceTypeSelect = resourceForm.querySelector('#resourceType');
         
         if (yearSelect) {
             loadYearOptions(yearSelect);
@@ -309,6 +378,13 @@ function initializeForms() {
                 } else {
                     subjectSelect.innerHTML = '<option value="">Select Year First</option>';
                 }
+            });
+        }
+        
+        // Add event listener for resource type changes
+        if (resourceTypeSelect) {
+            resourceTypeSelect.addEventListener('change', () => {
+                toggleResourceFields(resourceTypeSelect.value);
             });
         }
         
@@ -473,6 +549,12 @@ async function handleResourceSubmit(e) {
     const formData = new FormData(form);
     formData.append('action', 'admin_create_resource');
     
+    // Handle thumbnail file separately if present
+    const thumbnailInput = form.querySelector('#resourceThumbnail');
+    if (thumbnailInput && thumbnailInput.files[0]) {
+        formData.append('thumbnail', thumbnailInput.files[0]);
+    }
+    
     // The resource_type is already set in the form
     
     try {
@@ -480,6 +562,7 @@ async function handleResourceSubmit(e) {
         if (result.success) {
             alert('Resource added successfully!');
             closeModal('resourceModal');
+            form.reset(); // Clear the form
             loadResources();
         } else {
             alert('Error: ' + (result.error || 'Failed to add resource'));
@@ -499,9 +582,10 @@ async function loadDashboardData() {
         
         // Load data for each section
         loadBooks();
-        // loadJournals(); // Journals managed via Pages
-        // loadPublications(); // Publications managed via Pages
-        // loadCareers(); // Careers managed via Pages
+        loadJournals(); // Now using enhanced resource system
+        loadPublications(); // Now using enhanced resource system
+        loadCareers(); // Now using enhanced resource system
+        loadImportantQuestions(); // New important questions system
         loadQuestions();
         loadResources();
         
@@ -575,25 +659,121 @@ async function loadJournals() {
                     <tr>
                         <td>${journal.title}</td>
                         <td>${journal.description || '-'}</td>
-                        <td>-</td>
-                        <td>${journal.uploaded_at || '-'}</td>
+                        <td>${journal.year_name || '-'}</td>
+                        <td>${journal.subject_name || '-'}</td>
+                        <td><span class="badge journal">Journal</span></td>
                         <td>
                             <button class="btn danger small" onclick="deleteResource(${journal.id}, 'journal')">Delete</button>
                         </td>
                     </tr>
                 `).join('');
             } else {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center">No journals found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No journals found</td></tr>';
             }
         }
+        
+        // Update dashboard stats
+        const totalJournalsEl = document.getElementById('totalJournals');
+        if (totalJournalsEl) totalJournalsEl.textContent = journals.length;
     } catch (error) {
         console.error('Error loading journals:', error);
     }
 }
 
-// loadPublications removed (Publications managed via Pages)
+async function loadPublications() {
+    try {
+        const resources = await api('admin_list_resources');
+        const publications = resources.filter(resource => resource.resource_type === 'publication');
+        const tbody = document.querySelector('#publicationsTable tbody');
+        
+        if (tbody) {
+            if (publications && publications.length > 0) {
+                tbody.innerHTML = publications.map(publication => `
+                    <tr>
+                        <td>${publication.title}</td>
+                        <td>${publication.description || '-'}</td>
+                        <td>${publication.year_name || '-'}</td>
+                        <td>${publication.subject_name || '-'}</td>
+                        <td><span class="badge publication">Publication</span></td>
+                        <td>
+                            <button class="btn danger small" onclick="deleteResource(${publication.id}, 'publication')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No publications found</td></tr>';
+            }
+        }
+        
+        // Update dashboard stats
+        const totalPublicationsEl = document.getElementById('totalPublications');
+        if (totalPublicationsEl) totalPublicationsEl.textContent = publications.length;
+    } catch (error) {
+        console.error('Error loading publications:', error);
+    }
+}
 
-// loadCareers removed (Careers managed via Pages)
+async function loadCareers() {
+    try {
+        const resources = await api('admin_list_resources');
+        const careers = resources.filter(resource => resource.resource_type === 'career');
+        const tbody = document.querySelector('#careersTable tbody');
+        
+        if (tbody) {
+            if (careers && careers.length > 0) {
+                tbody.innerHTML = careers.map(career => `
+                    <tr>
+                        <td>${career.title}</td>
+                        <td>${career.description || '-'}</td>
+                        <td>${career.year_name || '-'}</td>
+                        <td>${career.subject_name || '-'}</td>
+                        <td><span class="badge career">Career</span></td>
+                        <td>
+                            <button class="btn danger small" onclick="deleteResource(${career.id}, 'career')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No career resources found</td></tr>';
+            }
+        }
+        
+        // Update dashboard stats
+        const activeJobsEl = document.getElementById('activeJobs');
+        if (activeJobsEl) activeJobsEl.textContent = careers.length;
+    } catch (error) {
+        console.error('Error loading careers:', error);
+    }
+}
+
+async function loadImportantQuestions() {
+    try {
+        const resources = await api('admin_list_resources');
+        const importantQuestions = resources.filter(resource => resource.resource_type === 'important-question');
+        const tbody = document.querySelector('#importantQuestionsTable tbody');
+        
+        if (tbody) {
+            if (importantQuestions && importantQuestions.length > 0) {
+                tbody.innerHTML = importantQuestions.map(question => `
+                    <tr>
+                        <td>${question.title}</td>
+                        <td>${question.description || '-'}</td>
+                        <td>${question.year_name || '-'}</td>
+                        <td>${question.subject_name || '-'}</td>
+                        <td><span class="badge important-question">Important Question</span></td>
+                        <td>
+                            <button class="btn danger small" onclick="deleteResource(${question.id}, 'important-question')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No important questions found</td></tr>';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading important questions:', error);
+    }
+}
 
 async function loadQuestions() {
     try {
@@ -663,6 +843,7 @@ async function deleteResource(id, type) {
             else if (type === 'journal') loadJournals();
             else if (type === 'publication') loadPublications();
             else if (type === 'career') loadCareers();
+            else if (type === 'important-question') loadImportantQuestions();
             else if (type === 'question') loadQuestions();
         } else {
             alert('Error: ' + (result.error || 'Failed to delete resource'));

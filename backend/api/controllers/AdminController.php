@@ -63,16 +63,31 @@ class AdminController {
     return $stmt->fetchAll();
   }
 
-  public function createResource($subject_id, $title, $description, $external_url, $resource_type, $year_id = null) {
+  public function createResource($subject_id, $title, $description, $external_url, $resource_type, $year_id = null, $card_color = '#0ea5e9') {
     $this->ensure_auth();
     $file_path = null; $mime = null; $size = null;
+    $thumbnail_path = null;
+    
+    // Handle main file upload
     if (isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
       require_once __DIR__ . '/../uploadModel.php';
       [$file_path, $mime, $size] = handle_upload($_FILES['file'], $this->config);
     }
-    $stmt = $this->pdo->prepare("INSERT INTO resources (subject_id, year_id, title, description, file_path, external_url, mime_type, file_size, resource_type, uploaded_by)
-                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$subject_id, $year_id, $title, $description, $file_path, $external_url, $mime, $size, $resource_type, $_SESSION['admin_user']['id'] ?? null]);
+    
+    // Handle thumbnail upload
+    if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] !== UPLOAD_ERR_NO_FILE) {
+      require_once __DIR__ . '/../uploadModel.php';
+      // Create a modified config for thumbnails (only images)
+      $thumbnail_config = $this->config;
+      $thumbnail_config['allowed_mime_types'] = [
+        'image/jpeg', 'image/png', 'image/gif', 'image/webp'
+      ];
+      [$thumbnail_path, $thumb_mime, $thumb_size] = handle_upload($_FILES['thumbnail'], $thumbnail_config, 'thumbnails');
+    }
+    
+    $stmt = $this->pdo->prepare("INSERT INTO resources (subject_id, year_id, title, description, file_path, thumbnail_path, card_color, external_url, mime_type, file_size, resource_type, uploaded_by)
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$subject_id, $year_id, $title, $description, $file_path, $thumbnail_path, $card_color, $external_url, $mime, $size, $resource_type, $_SESSION['admin_user']['id'] ?? null]);
     return ['success' => true, 'resource_id' => $this->pdo->lastInsertId()];
   }
 

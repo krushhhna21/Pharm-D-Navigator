@@ -437,6 +437,48 @@
   color: white;
 }
 
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge.journal {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge.publication {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.badge.career {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge.important-question {
+  background: #fef2f2;
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.badge.book {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.badge.question {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
 /* Resource Table */
 .resource-table {
   margin-top: 1.5rem;
@@ -561,4 +603,17 @@
 .upload-message.show {
   display: block;
   animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Form field visibility control */
+.resource-year-field.hidden,
+.resource-subject-field.hidden {
+    display: none;
+}
+
+.form-group small.muted {
+    color: #718096;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
 }

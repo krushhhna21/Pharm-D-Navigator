@@ -1,6 +1,6 @@
 <?php
 // uploadModel.php - file upload helper
-function handle_upload(array $file, array $config) {
+function handle_upload(array $file, array $config, $subfolder = '') {
   if ($file['error'] !== UPLOAD_ERR_OK) {
     throw new Exception('Upload failed with error code ' . $file['error']);
   }
@@ -18,10 +18,16 @@ function handle_upload(array $file, array $config) {
 
   $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
   $safeBase = preg_replace('/[^A-Za-z0-9_\-]/', '_', pathinfo($file['name'], PATHINFO_FILENAME));
-  $destDir = __DIR__ . '/../uploads/' . date('Y/m');
+  
+  // Create directory path with optional subfolder
+  $dateFolder = date('Y/m');
+  $dirPath = $subfolder ? "$dateFolder/$subfolder" : $dateFolder;
+  $destDir = __DIR__ . '/../uploads/' . $dirPath;
+  
   if (!is_dir($destDir)) {
     mkdir($destDir, 0775, true);
   }
+  
   $destName = sprintf('%s_%s.%s', $safeBase, bin2hex(random_bytes(5)), $ext);
   $destPath = $destDir . '/' . $destName;
 
@@ -30,6 +36,6 @@ function handle_upload(array $file, array $config) {
   }
 
   // Return path relative to backend
-  $rel = 'backend/uploads/' . date('Y/m') . '/' . $destName;
+  $rel = 'backend/uploads/' . $dirPath . '/' . $destName;
   return [$rel, $mime, $file['size']];
 }

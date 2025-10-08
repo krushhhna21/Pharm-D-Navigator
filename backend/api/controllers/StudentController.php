@@ -18,7 +18,7 @@ class StudentController {
   }
 
   public function listResources($subject_id, $resource_type = 'resource') {
-    $stmt = $this->pdo->prepare("SELECT id, title, description, file_path, external_url, mime_type, file_size, uploaded_at
+    $stmt = $this->pdo->prepare("SELECT id, title, description, file_path, thumbnail_path, card_color, external_url, mime_type, file_size, uploaded_at, resource_type
                                  FROM resources WHERE subject_id = ? AND resource_type = ? ORDER BY uploaded_at DESC");
     $stmt->execute([$subject_id, $resource_type]);
     return $stmt->fetchAll();
@@ -27,7 +27,7 @@ class StudentController {
   public function listResourcesByYear($year_id, $resource_type = 'resource') {
     // Join with subjects to get subject name, but allow null subject_id for questions
     $stmt = $this->pdo->prepare("
-      SELECT r.id, r.title, r.description, r.file_path, r.external_url, r.mime_type, r.file_size, r.uploaded_at, 
+      SELECT r.id, r.title, r.description, r.file_path, r.thumbnail_path, r.card_color, r.external_url, r.mime_type, r.file_size, r.uploaded_at, r.resource_type,
              s.name as subject_name
       FROM resources r 
       LEFT JOIN subjects s ON r.subject_id = s.id 
@@ -35,6 +35,21 @@ class StudentController {
       ORDER BY r.uploaded_at DESC
     ");
     $stmt->execute([$year_id, $resource_type]);
+    return $stmt->fetchAll();
+  }
+
+  public function listResourcesByType($resource_type) {
+    // Get all resources of a specific type (for general resources like journals, publications, career)
+    $stmt = $this->pdo->prepare("
+      SELECT r.id, r.title, r.description, r.file_path, r.thumbnail_path, r.card_color, r.external_url, r.mime_type, r.file_size, r.uploaded_at, r.resource_type,
+             s.name as subject_name, y.display_name as year_name
+      FROM resources r 
+      LEFT JOIN subjects s ON r.subject_id = s.id 
+      LEFT JOIN years y ON r.year_id = y.id
+      WHERE r.resource_type = ? 
+      ORDER BY r.uploaded_at DESC
+    ");
+    $stmt->execute([$resource_type]);
     return $stmt->fetchAll();
   }
 
