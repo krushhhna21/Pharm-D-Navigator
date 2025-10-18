@@ -1,55 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <title>API Debug</title>
-</head>
-<body>
-    <h1>API Debug Test</h1>
-    <div id="results"></div>
-    
-    <script>
-        const API_BASE = 'http://localhost/scop-resource-hub/backend/api/index.php';
-        
-        async function testAPI() {
-            const results = document.getElementById('results');
-            
-            try {
-                // Test 1: List resources by subject (like the main page does)
-                console.log('Testing API call for important questions...');
-                const url1 = `${API_BASE}?action=list_resources&subject_id=3&resource_type=important-question`;
-                console.log('URL 1:', url1);
-                
-                const response1 = await fetch(url1, { credentials: 'include' });
-                console.log('Response 1 status:', response1.status);
-                const data1 = await response1.json();
-                console.log('Response 1 data:', data1);
-                
-                results.innerHTML += `<h3>Test 1: List resources by subject</h3>`;
-                results.innerHTML += `<p>URL: ${url1}</p>`;
-                results.innerHTML += `<p>Status: ${response1.status}</p>`;
-                results.innerHTML += `<pre>${JSON.stringify(data1, null, 2)}</pre>`;
-                
-                // Test 2: List resources by year (alternative method)
-                const url2 = `${API_BASE}?action=list_resources_by_year&year_id=1&resource_type=important-question`;
-                console.log('URL 2:', url2);
-                
-                const response2 = await fetch(url2, { credentials: 'include' });
-                console.log('Response 2 status:', response2.status);
-                const data2 = await response2.json();
-                console.log('Response 2 data:', data2);
-                
-                results.innerHTML += `<h3>Test 2: List resources by year</h3>`;
-                results.innerHTML += `<p>URL: ${url2}</p>`;
-                results.innerHTML += `<p>Status: ${response2.status}</p>`;
-                results.innerHTML += `<pre>${JSON.stringify(data2, null, 2)}</pre>`;
-                
-            } catch (error) {
-                console.error('Error:', error);
-                results.innerHTML += `<p style="color: red;">Error: ${error.message}</p>`;
-            }
-        }
-        
-        testAPI();
-    </script>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <title>Debug page removed</title>
+    </head>
+    <body>
+        <h1>Debug Page Removed</h1>
+        <p>This debug page has been removed from the production repo.</p>
+    </body>
 </html>
