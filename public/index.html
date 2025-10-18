@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <meta name="description" content="Shivlingeshwar College of Pharmacy (SCOP) Almala — Pharm D Resource Hub">
-  <meta name="api-base" content="http://localhost/scop-resource-hub/backend/api">
+  <!-- Use a relative API path so the frontend calls the backend on the same host.
+    When deploying to a different host, set this to the full API URL (https://yourdomain/.../backend/api/index.php) -->
+  <meta name="api-base" content="/backend/api/index.php">
 </head>
 <body>
   <div class="menu-tab" role="navigation">
